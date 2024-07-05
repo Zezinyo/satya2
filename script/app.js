@@ -1,13 +1,18 @@
- const mainContent = document.getElementById('main-content');
+const mainContent = document.getElementById('main-content');
 let currentPage = 'accueil'; // Página inicial
        
-       const buttons = document.querySelectorAll('nav button');
-       const languageSelect = document.getElementById('language-select');
+const buttons = document.querySelectorAll('nav button');
+const languageSelect = document.getElementById('language-select');
+
+const menuToggle = document.querySelector(".menu-toggle");
+const menu = document.querySelector(".menu");
+
+let currentLanguage = 'fr'; // Variable para almacenar el idioma actual seleccionado
 
 document.addEventListener('DOMContentLoaded', () => {
     // Configuración de i18next
     i18next.use(i18nextBrowserLanguageDetector).init({
-        fallbackLng: 'es',
+        fallbackLng: 'fr',
         resources: {
             fr: {
                 translation: {
@@ -60,6 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, function(err, t) {
         if (err) return console.error(err);
+
+        // Obtener el idioma detectado por i18next o el idioma por defecto
+        currentLanguage = i18next.language || 'fr';
+        languageSelect.value = currentLanguage; // Establecer el valor del selector de idioma
+        
         loadPage(currentPage); // Actualiza el contenido después de la inicialización
     });
 
@@ -71,19 +81,37 @@ document.addEventListener('DOMContentLoaded', () => {
     languageSelect.addEventListener('change', (event) => {
         const selectedLang = event.target.value;
         i18next.changeLanguage(selectedLang, () => {
+            currentLanguage = selectedLang;
+            languageSelect.value = selectedLang;
             loadPage(currentPage); // Recargar la página actual con el nuevo idioma
         });
     });
 
     // Escuchar clics en los botones del menú de navegación
     buttons.forEach(button => {
+
         button.addEventListener('click', () => {
             currentPage = button.getAttribute('data-page');
             loadPage(currentPage);
+          //  if(window.innerWidth<=768){
+            //    menu.classList.remove("active");
+               // document.body.classList.remove("no-scroll"); }
         });
     });
+    
+    // Menú hamburguesa
+    menuToggle.addEventListener("click", function() {
+        menu.classList.toggle("active");
+/*
+        if (menu.classList.contains("active")) {
+            document.body.classList.add("no-scroll"); // Evitar el scroll cuando el menú está activo
+        } else {
+            document.body.classList.remove("no-scroll"); // Permitir el scroll cuando el menú está inactivo
+        }*/
+    });
+
 
     function loadPage(page) {
-        mainContent.innerHTML = i18next.t(page + "Content");     
+        if(page) mainContent.innerHTML = i18next.t(page + "Content");     
     }
 });

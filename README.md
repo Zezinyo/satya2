@@ -1,5 +1,5 @@
 # satya2
-version 2 de la pagina de satya
+version 2 de la pagina de satya 2
 
 ## Uso
 
